@@ -1,0 +1,231 @@
+(function($) {
+'use strict';
+	$(document).ready(function() {
+$(".image_parallax_inner_hover").waypoint(function() {	
+var dopacity= $(this).attr('data-opacity');
+var damount= $(this).attr('data-amount');
+var dtype= $(this).attr('data-type');
+
+               $(this).css('opacity',dopacity);		
+		var offset = 0;
+		if ( dtype === 'tilt' ) {
+			offset = - parseInt( damount ) * .6 + '%';
+		} else {
+			offset = - parseInt( damount ) + 'px';
+		}
+		$(this).css('top',offset);
+		$(this).css('left',offset);
+		$(this).css('right',offset);
+		$(this).css('bottom',offset);
+		$(this).css('width','auto');
+		$(this).css('height','auto');
+}, { offset: '85%' });
+	var elements = document.querySelectorAll('.image_mouse_hover');
+
+	Array.prototype.forEach.call(elements, function(el, i) {
+		// find Row
+		var row = el.parentNode;
+		while ( ! row.classList.contains('vc_row') && ! row.classList.contains('wpb_row') ) {
+			if ( row.tagName === 'HTML' ) {
+				return;
+			}
+			row = row.parentNode;
+		}
+		
+		row.style.overflow = 'hidden';
+		row.classList.add('image_parallax_row');
+		
+	});
+	
+	
+	// Disable hover rows in mobile
+	/*function _isMobile() {
+		return ( Modernizr.touch && jQuery(window).width() <= 1000 ) || // touch device estimate
+	 	 	   ( window.screen.width <= 1040 && window.devicePixelRatio > 1 ); // device size estimate
+	}
+	if ( _isMobile() ) {
+		return;
+	}*/
+	
+	
+	// Bind to mousemove so animate the hover row
+	var elements = document.querySelectorAll('.image_parallax_row');
+	Array.prototype.forEach.call(elements, function(row, i) {
+		
+		row.addEventListener('mousemove', function(e) {
+			
+			// Get the parent row
+			var parentRow = e.target.parentNode;
+			while ( ! parentRow.classList.contains('image_parallax_row') ) {
+						
+				if ( parentRow.tagName === 'HTML' ) {
+					return;
+				}
+				
+				parentRow = parentRow.parentNode;
+			}
+			
+			// Get the % location of the mouse position inside the row
+			var rect = parentRow.getBoundingClientRect();
+			var top = e.pageY - ( rect.top + window.pageYOffset );
+			var left = e.pageX  - ( rect.left + window.pageXOffset );
+			top /= parentRow.clientHeight;
+			left /= parentRow.clientWidth;
+			
+			// Move all the hover inner divs
+			var hoverRows = parentRow.querySelectorAll('.image_parallax_inner_hover');
+			Array.prototype.forEach.call(hoverRows, function(hoverBg, i) {
+			
+				// Parameters
+				var amount = parseFloat( hoverBg.getAttribute( 'data-amount' ) );
+				var inverted = hoverBg.getAttribute( 'data-inverted' ) === 'true';
+				var transform;
+			
+				if ( hoverBg.getAttribute( 'data-type' ) === 'tilt' ) {
+					
+					var rotateY = left * amount - amount / 2;
+					var rotateX = ( 1 - top ) * amount - amount / 2;
+					if ( inverted ) {
+						rotateY = ( 1 - left ) * amount - amount / 2;
+						rotateX = top * amount - amount / 2;
+					}
+					
+					transform = 'perspective(2000px) ';
+					transform += 'rotateY(' + rotateY + 'deg) ';
+					transform += 'rotateX(' + rotateX + 'deg) ';
+
+					hoverBg.style.transition = 'all 0s';
+					hoverBg.style.webkitTransform = transform;
+					hoverBg.style.transform = transform;
+					
+				} else {
+				
+					var moveX = left * amount - amount / 2;
+					var moveY = top * amount - amount / 2;
+					if ( inverted ) {
+						moveX *= -1;
+						moveY *= -1;
+					}
+					transform = 'translate3D(' + moveX + 'px, ' + moveY + 'px, 0) ';
+
+					hoverBg.style.transition = 'all 0s';
+					hoverBg.style.webkitTransform = transform;
+					hoverBg.style.transform = transform;
+				}
+				
+			});
+		});
+		
+	
+		// Bind to mousemove so animate the hover row to it's default state
+		row.addEventListener('mouseout', function(e) {
+			
+			// Get the parent row
+			var parentRow = e.target.parentNode;
+			while ( ! parentRow.classList.contains('image_parallax_row') ) {
+						
+				if ( parentRow.tagName === 'HTML' ) {
+					return;
+				}
+				
+				parentRow = parentRow.parentNode;
+			}
+			
+			// Reset all the animations
+			var hoverRows = parentRow.querySelectorAll('.image_parallax_inner_hover');
+			Array.prototype.forEach.call(hoverRows, function(hoverBg, i) {
+
+				var amount = parseFloat( hoverBg.getAttribute( 'data-amount' ) );
+			
+				hoverBg.style.transition = 'all 3s ease-in-out';
+				if ( hoverBg.getAttribute( 'data-type' ) === 'tilt' ) {
+					hoverBg.style.webkitTransform = 'perspective(2000px) rotateY(0) rotateX(0)';
+					hoverBg.style.transform = 'perspective(2000px) rotateY(0) rotateX(0)';
+				} else {
+					hoverBg.style.webkitTransform = 'translate3D(0, 0, 0)';
+					hoverBg.style.transform = 'translate3D(0, 0, 0)';
+				}
+				
+			});
+		});
+	});
+/*--------------------------------------------------------------------------------------------------------------------------*/
+var elements = document.querySelectorAll('.mordern_image_parallax');
+
+	Array.prototype.forEach.call(elements, function(el, i) {
+		// find Row
+		var row = el.parentNode;
+		while ( ! row.classList.contains('vc_row') && ! row.classList.contains('wpb_row') ) {
+			if ( row.tagName === 'HTML' ) {
+				return;
+			}
+			row = row.parentNode;
+		}
+		
+		row.style.overflow = 'hidden';
+		row.classList.add('image_parallax_row');		
+	});
+// Bind to mousemove so animate the hover row
+	var elements = document.querySelectorAll('.image_parallax_row');
+	Array.prototype.forEach.call(elements, function(row, i) {
+		
+		row.addEventListener('mousemove', function(e) {
+			
+			// Get the parent row
+			var parentRow = e.target.parentNode;
+			while ( ! parentRow.classList.contains('image_parallax_row') ) {
+						
+				if ( parentRow.tagName === 'HTML' ) {
+					return;
+				}
+				
+				parentRow = parentRow.parentNode;
+			}
+			
+			// Get the % location of the mouse position inside the row
+			var rect = parentRow.getBoundingClientRect();
+			var top = e.pageY - ( rect.top + window.pageYOffset );
+			var left = e.pageX  - ( rect.left + window.pageXOffset );
+			top /= parentRow.clientHeight;
+			left /= parentRow.clientWidth;
+			
+			// Move all the hover inner divs
+			var hoverRows = parentRow.querySelectorAll('.parallax_image');
+			Array.prototype.forEach.call(hoverRows, function(hoverBg, i) {
+			
+				// Parameters
+				var amount = parseFloat( hoverBg.getAttribute( 'data-parallax' ) );
+				TweenLite.to( hoverBg, 0.2, {x : -(( e.clientX - (window.innerWidth/2) ) / amount ),y : -(( e.clientY - (window.innerHeight/2) ) / amount ) });
+			});
+		});
+		
+	
+		// Bind to mousemove so animate the hover row to it's default state
+		row.addEventListener('mouseout', function(e) {
+			
+			// Get the parent row
+			var parentRow = e.target.parentNode;
+			while ( ! parentRow.classList.contains('image_parallax_row') ) {
+						
+				if ( parentRow.tagName === 'HTML' ) {
+					return;
+				}
+				
+				parentRow = parentRow.parentNode;
+			}
+			
+			// Reset all the animations
+			var hoverRows = parentRow.querySelectorAll('.parallax_image');
+			Array.prototype.forEach.call(hoverRows, function(hoverBg, i) {
+
+				var amount = parseFloat( hoverBg.getAttribute( 'data-parallax' ) );
+			
+				TweenLite.to( hoverBg, 0.2, {x : -(( e.clientX - (window.innerWidth/2) ) / amount ),y : -(( e.clientY - (window.innerHeight/2) ) / amount ) });
+				
+				
+			});
+		});
+	});
+	
+});
+})(jQuery);
